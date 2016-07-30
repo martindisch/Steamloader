@@ -1,2 +1,2 @@
 # Steamloader
-A tool that downloads steam workshop items
+A tool that downloads Steam workshop items
