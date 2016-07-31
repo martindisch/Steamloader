@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <argp.h>
+#include "steamaccess/steamaccess.h"
 
 // Version & address for version & help
 const char *argp_program_version = "Steamloader 0.1";
@@ -51,7 +52,7 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
                     arguments->args = temp;
                     arguments->args_size = new_size;
                 } else {
-                    printf("Ran out of memory\n");
+                    printf("Ran out of memory processing arguments\n");
                     exit(1);
                 }
             }
@@ -86,13 +87,11 @@ int main(int argc, char **argv) {
     /**
      * Debug code
      */
-    printf("Silent: %d\n", arguments.silent);
-    printf("Output: %s\n", arguments.output);
-    printf("ID count: %d\n", arguments.id_count);
-    int i;
-    printf("\nArguments:\n");
-    for (i = 0; i < arguments.id_count; i++) {
-        printf("%s\n", arguments.args[i]);
+    char *url = "https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v0001/";
+    char *fields = "itemcount=1&publishedfileids[0]=722648525";
+    char *result = get_post(url, fields);
+    if (result) {
+        printf("%s\n", result);
     }
     
     free(arguments.args);
