@@ -1,4 +1,5 @@
 #include <stdlib.h>
+
 #include "steamaccess.h"
 
 struct fileinfo *get_fileinfo(char *id) {
