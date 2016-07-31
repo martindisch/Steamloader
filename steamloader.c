@@ -3,7 +3,6 @@
 #include <argp.h>
 
 #include "steamaccess/steamaccess.h"
-#include "curlpost/curlpost.h"
 
 // version & address for version & help
 const char *argp_program_version = "Steamloader 0.1";
@@ -89,11 +88,16 @@ int main(int argc, char **argv) {
     /**
      * Debug code
      */
-    char *url = "https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v0001/";
-    char *fields = "itemcount=1&publishedfileids[0]=722648525";
-    char *result = get_post(url, fields);
+    struct fileinfo *result = get_fileinfo("722648525");
     if (result) {
-        printf("%s\n", result);
+        printf("%s\n%s\n", result->filename, result->download);
+        // flush to make sure printf is done before we start freeing memory
+        fflush(stdout);
+        free(result->filename);
+        free(result->download);
+        free(result);
+    } else {
+        printf("Unable to obtain result\n");
     }
     
     free(arguments.args);

@@ -34,7 +34,7 @@ static size_t write_mem_callback(void *contents, size_t size, size_t nmemb, void
  * @param url constant character pointer to the URL
  * @param fields constant character pointer to the fields
  * @returns character pointer to the answer string or NULL if there was an error.
- * This must be freed by the user.
+ * This memory must be freed by the user.
  */
 char *get_post(const char *url, const char *fields) {
     CURL *curl_handle;
