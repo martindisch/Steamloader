@@ -31,12 +31,12 @@ static size_t write_mem_callback(void *contents, size_t size, size_t nmemb, void
  * Returns the answer to a HTTP POST request using the given url and fields.
  * Note: after using the result, the memory must be freed by the user.
  * 
- * @param url character pointer to the URL
- * @param fields character pointer to the fields
+ * @param url constant character pointer to the URL
+ * @param fields constant character pointer to the fields
  * @returns character pointer to the answer string or NULL if there was an error.
  * This must be freed by the user.
  */
-char *get_post(char *url, char *fields) {
+char *get_post(const char *url, const char *fields) {
     CURL *curl_handle;
     CURLcode res;
     
