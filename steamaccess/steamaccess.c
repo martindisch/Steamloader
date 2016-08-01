@@ -29,7 +29,7 @@ static int jsoneq(const char *json, jsmntok_t *tok, const char *s) {
  */
 struct fileinfo **get_fileinfo(char *items[], int itemcount) {
     // append ID to fields string
-    char *field_buffer = malloc((15 + 32 * itemcount) * sizeof(char));
+    char *field_buffer = malloc((15 + 35 * itemcount) * sizeof(char));
     if (field_buffer == NULL) {
         printf("Ran out of memory allocating field space\n");
         exit(1);
