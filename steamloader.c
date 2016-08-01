@@ -80,6 +80,10 @@ int main(int argc, char **argv) {
     arguments.output = "-";
     arguments.id_count = 0;
     arguments.args = malloc(20 * sizeof(char *));
+    if (arguments.args == NULL) {
+        printf("Failed to allocate memory for args\n");
+        exit(1);
+    }
     arguments.args_size = 20;
     
     // parse arguments
@@ -88,14 +92,18 @@ int main(int argc, char **argv) {
     /**
      * Debug code
      */
-    struct fileinfo *result = get_fileinfo("722648525");
-    if (result) {
-        printf("%s\n%s\n", result->filename, result->download);
-        // flush to make sure printf is done before we start freeing memory
-        fflush(stdout);
-        free(result->filename);
-        free(result->download);
-        free(result);
+    char *items[] = { "734155390", "731218653", "731614240" };
+    struct fileinfo **results = get_fileinfo(items, 3);
+    if (results) {
+        int i;
+        for (i = 0; i < 3; i++) {
+            printf("%s\n%s\n", results[i]->filename, results[i]->download);
+            fflush(stdout);
+            free(results[i]->filename);
+            free(results[i]->download);
+            free(results[i]);
+        }
+        free(results);
     } else {
         printf("Unable to obtain result\n");
     }

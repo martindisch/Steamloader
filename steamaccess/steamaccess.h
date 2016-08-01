@@ -3,4 +3,4 @@ struct fileinfo {
     char *download;
 };
 
-struct fileinfo *get_fileinfo(char *);
+struct fileinfo **get_fileinfo(char **, int);
