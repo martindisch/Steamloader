@@ -27,7 +27,7 @@ struct arguments {
     char **args;
     int silent;
     char *output;
-    int id_count;
+    int nonopt_count;
     int args_size;
 };
 
@@ -44,9 +44,9 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
             arguments->silent = 1;
         break;
         case ARGP_KEY_ARG:
-            arguments->id_count++;
+            arguments->nonopt_count++;
             // decide if we need to allocate more memory for arguments
-            if (arguments->id_count > arguments->args_size) {
+            if (arguments->nonopt_count > arguments->args_size) {
                 int new_size = arguments->args_size * 2;
                 char **temp = realloc(arguments->args, new_size * sizeof(char *));
                 if (temp) {
@@ -78,7 +78,7 @@ int main(int argc, char **argv) {
     // set default values
     arguments.silent = 0;
     arguments.output = "-";
-    arguments.id_count = 0;
+    arguments.nonopt_count = 0;
     arguments.args = malloc(20 * sizeof(char *));
     if (arguments.args == NULL) {
         printf("Failed to allocate memory for args\n");
@@ -92,11 +92,10 @@ int main(int argc, char **argv) {
     /**
      * Debug code
      */
-    char *items[] = { "734155390", "731218653", "731614240" };
-    struct fileinfo **results = get_fileinfo(items, 3);
+    struct fileinfo **results = get_fileinfo(arguments.args, arguments.nonopt_count);
     if (results) {
         int i;
-        for (i = 0; i < 3; i++) {
+        for (i = 0; i < arguments.nonopt_count; i++) {
             printf("%s\n%s\n", results[i]->filename, results[i]->download);
             fflush(stdout);
             free(results[i]->filename);
