@@ -54,17 +54,17 @@ struct fileinfo **get_fileinfo(char *items[], int itemcount) {
     
     // initialize JSON parser & parse
     jsmn_parser p;
-    jsmntok_t *t = malloc(90 * sizeof(jsmntok_t) * itemcount);
+    jsmntok_t *t = malloc(100 * sizeof(jsmntok_t) * itemcount);
     if (!t) {
         printf("Ran out of memory allocating tokens\n");
         exit(1);
     }
     jsmn_init(&p);
-    int r = jsmn_parse(&p, result, strlen(result), t, 90 * itemcount);
+    int r = jsmn_parse(&p, result, strlen(result), t, 100 * itemcount);
     
     // in case of parsing failure return NULL
     if (r < 0) {
-        printf("Failed to parse JSON: %d\n", r);
+        printf("Failed to parse JSON: %d - possibly more tokens than expected\n", r);
         free(result);
         free(field_buffer);
         return NULL;
