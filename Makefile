@@ -3,6 +3,9 @@ all: steamloader
 steamloader: steamloader.o steamaccess.o libcurlpost.a libcurlloader.a libjsmn.a
 	gcc steamloader.o steamaccess/steamaccess.o curlpost/libcurlpost.a curlloader/libcurlloader.a jsmn/libjsmn.a -o steamloader -lcurl
 
+debug: steamloader.o steamaccess.o libcurlpost.a libcurlloader.a libjsmn.a
+	gcc -g -O0 steamloader.o steamaccess/steamaccess.o curlpost/libcurlpost.a curlloader/libcurlloader.a jsmn/libjsmn.a -o steamloader -lcurl
+
 steamloader.o: steamloader.c
 	gcc -c steamloader.c
 

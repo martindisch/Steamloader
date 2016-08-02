@@ -57,12 +57,14 @@ struct downloadinfo **get_downloadinfo(char *items[], int itemcount) {
         printf("Failed to parse JSON: %d - possibly more tokens than expected\n", r);
         free(result);
         free(field_buffer);
+        free(t);
         return NULL;
     }
     if (r < 1 || t[0].type != JSMN_OBJECT) {
         printf("No object in JSON\n");
         free(result);
         free(field_buffer);
+        free(t);
         return NULL;
     }
     
@@ -112,6 +114,7 @@ struct downloadinfo **get_downloadinfo(char *items[], int itemcount) {
     
     free(result);
     free(field_buffer);
+    free(t);
     
     return inf;
 }
