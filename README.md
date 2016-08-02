@@ -7,6 +7,7 @@ The ID can be found in the item's URL. For a URL such as https://steamcommunity.
 ## Usage
 
 Run the tool by giving it the IDs of the items to download.
+
 `./steamloader ID1 ID2 ID3 ...`
 
 There is also an option `-o` to specify a different directory to download the items into. Steamloader is fully compliant with the GNU command line format, so feel free to use `-?`, `--help`, `--usage` or whatever to dig into it.
