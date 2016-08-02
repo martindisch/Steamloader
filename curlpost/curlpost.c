@@ -27,16 +27,7 @@ static size_t write_mem_callback(void *contents, size_t size, size_t nmemb, void
     return realsize;
 }
 
-/**
- * Returns the answer to a HTTP POST request using the given url and fields.
- * Note: after using the result, the memory must be freed by the user.
- * 
- * @param url constant character pointer to the URL
- * @param fields constant character pointer to the fields
- * @returns character pointer to the answer string or NULL if there was an error.
- * This memory must be freed by the user.
- */
-char *get_post(const char *url, const char *fields) {
+char *curl_post(const char *url, const char *fields) {
     CURL *curl_handle;
     CURLcode res;
     
@@ -51,13 +42,13 @@ char *get_post(const char *url, const char *fields) {
     // start curl session
     curl_handle = curl_easy_init();
     
-    // specify URL to get
+    // set URL to get
     curl_easy_setopt(curl_handle, CURLOPT_URL, url);
     
-    // specify POST data
+    // set POST data
     curl_easy_setopt(curl_handle, CURLOPT_POSTFIELDS, fields);
     
-    // specify callback
+    // set callback
     curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_mem_callback);
     
     // pass chunk structure to callback function

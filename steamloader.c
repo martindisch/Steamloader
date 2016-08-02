@@ -3,6 +3,7 @@
 #include <argp.h>
 
 #include "steamaccess/steamaccess.h"
+#include "curlloader/curlloader.h"
 
 // version & address for version & help
 const char *argp_program_version = "Steamloader 0.1";
@@ -77,7 +78,7 @@ int main(int argc, char **argv) {
     
     // set default values
     arguments.silent = 0;
-    arguments.output = "-";
+    arguments.output = "";
     arguments.nonopt_count = 0;
     arguments.args = malloc(20 * sizeof(char *));
     if (!arguments.args) {
@@ -92,19 +93,22 @@ int main(int argc, char **argv) {
     /**
      * Debug code
      */
-    struct fileinfo **results = get_fileinfo(arguments.args, arguments.nonopt_count);
+    struct downloadinfo **results = get_downloadinfo(arguments.args, arguments.nonopt_count);
     if (results) {
+        // download files
+        int download_count = curl_download(results, arguments.nonopt_count, arguments.output, !arguments.silent);
+        printf("Successfully downloaded %d of %d files\n", download_count, arguments.nonopt_count);
+        
+        // free result data structure
         int i;
         for (i = 0; i < arguments.nonopt_count; i++) {
-            printf("%s\n%s\n", results[i]->filename, results[i]->download);
-            fflush(stdout);
             free(results[i]->filename);
-            free(results[i]->download);
+            free(results[i]->url);
             free(results[i]);
         }
         free(results);
     } else {
-        printf("Unable to obtain result\n");
+        printf("Unable to obtain information from Steam\n");
     }
     
     free(arguments.args);

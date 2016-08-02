@@ -4,6 +4,7 @@
 
 #include "steamaccess.h"
 #include "../curlpost/curlpost.h"
+#include "../curlloader/curlloader.h"
 #include "../jsmn/jsmn.h"
 
 static const char *url = "https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v0001/";
@@ -16,18 +17,7 @@ static int jsoneq(const char *json, jsmntok_t *tok, const char *s) {
 	return -1;
 }
 
-/**
- * Returns the filenames and download links of given workshop items.
- * Note: the memory holding the information needs to be freed by the user.
- * 
- * @param items the Steam workshop IDs of the objects
- * @returns array of pointers to fileinfo structures with the names and download links
- * of the items or NULL if there was an error. The fileinfo structures may contain NULL
- * elements if not all details have been found in JSON, so there is a need to check the
- * results before handing them somewhere else where this might lead to a crash.
- * The memory allocated for the array, structures and strings in it needs to be freed by the user.
- */
-struct fileinfo **get_fileinfo(char *items[], int itemcount) {
+struct downloadinfo **get_downloadinfo(char *items[], int itemcount) {
     // append ID to fields string
     char *field_buffer = malloc((15 + 35 * itemcount) * sizeof(char));
     if (!field_buffer) {
@@ -43,7 +33,7 @@ struct fileinfo **get_fileinfo(char *items[], int itemcount) {
     }
     
     // make request
-    char *result = get_post(url, field_buffer);
+    char *result = curl_post(url, field_buffer);
     
     // in case of request failure, return NULL
     if (!result) {
@@ -76,12 +66,12 @@ struct fileinfo **get_fileinfo(char *items[], int itemcount) {
         return NULL;
     }
     
-    // prepare fileinfo structure for filling with details
+    // prepare downloadinfo structure for filling with details
     int z = 0;
     char buffer[200];
-    struct fileinfo **inf = malloc(itemcount * sizeof(struct fileinfo *));
+    struct downloadinfo **inf = malloc(itemcount * sizeof(struct downloadinfo *));
     if (!inf) {
-        printf("Ran out of memory allocating fileinfo structure\n");
+        printf("Ran out of memory allocating downloadinfo array\n");
         exit(1);
     }
     // go through all JSON tokens
@@ -89,10 +79,10 @@ struct fileinfo **get_fileinfo(char *items[], int itemcount) {
         if (jsoneq(result, &t[i], "filename") == 0) {
             // copy filename into buffer
             sprintf(buffer, "%.*s", t[i+1].end-t[i+1].start, result + t[i+1].start);
-            // allocate memory for the current fileinfo structure
-            inf[z] = malloc(sizeof(struct fileinfo));
+            // allocate memory for the current downloadinfo structure
+            inf[z] = malloc(sizeof(struct downloadinfo));
             if (!inf[z]) {
-                printf("Ran out of memory allocating fileinfo element\n");
+                printf("Ran out of memory allocating downloadinfo element\n");
                 exit(1);
             }
             // allocate memory in structure
@@ -108,14 +98,14 @@ struct fileinfo **get_fileinfo(char *items[], int itemcount) {
             // copy URL into buffer
             sprintf(buffer, "%.*s", t[i+1].end-t[i+1].start, result + t[i+1].start);
             // allocate memory in structure
-            inf[z]->download = malloc((strlen(buffer) * sizeof(char)) + 1);
-            if (!inf[z]->download) {
+            inf[z]->url = malloc((strlen(buffer) * sizeof(char)) + 1);
+            if (!inf[z]->url) {
                 // exit if not enough memory
                 printf("Ran out of memory processing JSON\n");
                 exit(1);
             }
             // copy URL into structure
-            strcpy(inf[z]->download, buffer);
+            strcpy(inf[z]->url, buffer);
             z++;
         }
     }
