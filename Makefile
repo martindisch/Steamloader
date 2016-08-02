@@ -31,4 +31,4 @@ jsmn.o: jsmn/jsmn.c jsmn/jsmn.h
 	gcc -c jsmn/jsmn.c -o jsmn/jsmn.o
 
 clean:
-	rm -f *.o */*.o */*.a steamloader
+	rm -rf download_test/ *.o */*.o */*.a steamloader
