@@ -30,7 +30,7 @@ static int jsoneq(const char *json, jsmntok_t *tok, const char *s) {
 struct fileinfo **get_fileinfo(char *items[], int itemcount) {
     // append ID to fields string
     char *field_buffer = malloc((15 + 35 * itemcount) * sizeof(char));
-    if (field_buffer == NULL) {
+    if (!field_buffer) {
         printf("Ran out of memory allocating field space\n");
         exit(1);
     }
@@ -47,6 +47,7 @@ struct fileinfo **get_fileinfo(char *items[], int itemcount) {
     
     // in case of request failure, return NULL
     if (!result) {
+        printf("HTTP request failed\n");
         free(field_buffer);
         return NULL;
     }
@@ -54,7 +55,7 @@ struct fileinfo **get_fileinfo(char *items[], int itemcount) {
     // initialize JSON parser & parse
     jsmn_parser p;
     jsmntok_t *t = malloc(90 * sizeof(jsmntok_t) * itemcount);
-    if (t == NULL) {
+    if (!t) {
         printf("Ran out of memory allocating tokens\n");
         exit(1);
     }
@@ -79,7 +80,7 @@ struct fileinfo **get_fileinfo(char *items[], int itemcount) {
     int z = 0;
     char buffer[200];
     struct fileinfo **inf = malloc(itemcount * sizeof(struct fileinfo *));
-    if (inf == NULL) {
+    if (!inf) {
         printf("Ran out of memory allocating fileinfo structure\n");
         exit(1);
     }
@@ -90,13 +91,13 @@ struct fileinfo **get_fileinfo(char *items[], int itemcount) {
             sprintf(buffer, "%.*s", t[i+1].end-t[i+1].start, result + t[i+1].start);
             // allocate memory for the current fileinfo structure
             inf[z] = malloc(sizeof(struct fileinfo));
-            if (inf[z] == NULL) {
+            if (!inf[z]) {
                 printf("Ran out of memory allocating fileinfo element\n");
                 exit(1);
             }
             // allocate memory in structure
             inf[z]->filename = malloc((strlen(buffer) * sizeof(char)) + 1);
-            if (inf[z]->filename == NULL) {
+            if (!inf[z]->filename) {
                 // exit if not enough memory
                 printf("Ran out of memory processing JSON\n");
                 exit(1);
@@ -108,7 +109,7 @@ struct fileinfo **get_fileinfo(char *items[], int itemcount) {
             sprintf(buffer, "%.*s", t[i+1].end-t[i+1].start, result + t[i+1].start);
             // allocate memory in structure
             inf[z]->download = malloc((strlen(buffer) * sizeof(char)) + 1);
-            if (inf[z]->download == NULL) {
+            if (!inf[z]->download) {
                 // exit if not enough memory
                 printf("Ran out of memory processing JSON\n");
                 exit(1);

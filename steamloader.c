@@ -80,7 +80,7 @@ int main(int argc, char **argv) {
     arguments.output = "-";
     arguments.nonopt_count = 0;
     arguments.args = malloc(20 * sizeof(char *));
-    if (arguments.args == NULL) {
+    if (!arguments.args) {
         printf("Failed to allocate memory for args\n");
         exit(1);
     }
