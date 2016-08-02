@@ -34,3 +34,6 @@
 
 # Binary
 steamloader
+
+# Download test folder
+download_test/*
