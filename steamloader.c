@@ -90,10 +90,9 @@ int main(int argc, char **argv) {
     // parse arguments
     argp_parse(&argp, argc, argv, 0, 0, &arguments);
     
-    /**
-     * Debug code
-     */
+    // get item info
     struct downloadinfo **results = get_downloadinfo(arguments.args, arguments.nonopt_count);
+    
     if (results) {
         // download files
         int download_count = curl_download(results, arguments.nonopt_count, arguments.output, !arguments.silent);
@@ -102,9 +101,11 @@ int main(int argc, char **argv) {
         // free result data structure
         int i;
         for (i = 0; i < arguments.nonopt_count; i++) {
-            free(results[i]->filename);
-            free(results[i]->url);
-            free(results[i]);
+            if (results[i]) {
+                free(results[i]->filename);
+                free(results[i]->url);
+                free(results[i]);
+            }
         }
         free(results);
     } else {

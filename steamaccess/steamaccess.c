@@ -71,6 +71,7 @@ struct downloadinfo **get_downloadinfo(char *items[], int itemcount) {
     // prepare downloadinfo structure for filling with details
     int z = 0;
     char buffer[200];
+    char id_buf[15] = "all";
     struct downloadinfo **inf = malloc(itemcount * sizeof(struct downloadinfo *));
     if (!inf) {
         printf("Ran out of memory allocating downloadinfo array\n");
@@ -109,6 +110,18 @@ struct downloadinfo **get_downloadinfo(char *items[], int itemcount) {
             // copy URL into structure
             strcpy(inf[z]->url, buffer);
             z++;
+        } else if(jsoneq(result, &t[i], "publishedfileid") == 0) {
+            // copy fileid into buffer
+            sprintf(id_buf, "%.*s", t[i+1].end-t[i+1].start, result + t[i+1].start);
+        } else if(jsoneq(result, &t[i], "result") == 0) {
+            // copy result code into buffer
+            sprintf(buffer, "%.*s", t[i+1].end-t[i+1].start, result + t[i+1].start);
+            if (strcmp(buffer, "1") != 0) {
+                // throw error if result is not 1
+                printf("JSON request returned result %s on item %s\n", buffer, id_buf);
+                inf[z] = NULL;
+                z++;
+            }
         }
     }
     

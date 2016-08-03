@@ -45,42 +45,46 @@ int curl_download(struct downloadinfo *files[], int filecount, char *location, i
     int i;
     int successes = 0;
     for (i = 0; i < filecount; i++) {
-        // set download url
-        curl_easy_setopt(curl_handle, CURLOPT_URL, files[i]->url);
-        
-        // set callback
-        curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_data);
-        
-        // please servers by specifying user agent
-        curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
-        
-        // prepare file path
-        strcpy(pathbuf, location);
-        strcat(pathbuf, files[i]->filename);
-        
-        // open the file
-        pagefile = fopen(pathbuf, "wb");
-        
-        if (!pagefile) {
-            printf("Failed to open file to save download - does the directory exist?\n");
-            exit(1);
-        } else {
-            // write page body to file handle
-            curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, pagefile);
+        if (files[i]) {
+            // set download url
+            curl_easy_setopt(curl_handle, CURLOPT_URL, files[i]->url);
             
-            // make request
-            curl_easy_perform(curl_handle);
+            // set callback
+            curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_data);
             
-            // close file
-            fclose(pagefile);
+            // please servers by specifying user agent
+            curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
             
-            // reset curl handle for reuse
-            curl_easy_reset(curl_handle);
+            // prepare file path
+            strcpy(pathbuf, location);
+            strcat(pathbuf, files[i]->filename);
             
-            if (verbose) {
-                printf("Downloaded file %s\n", pathbuf);
+            // open the file
+            pagefile = fopen(pathbuf, "wb");
+            
+            if (!pagefile) {
+                printf("Failed to open file to save download - does the directory exist?\n");
+                exit(1);
+            } else {
+                // write page body to file handle
+                curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, pagefile);
+                
+                // make request
+                curl_easy_perform(curl_handle);
+                
+                // close file
+                fclose(pagefile);
+                
+                // reset curl handle for reuse
+                curl_easy_reset(curl_handle);
+            
+                if (verbose) {
+                    printf("Downloaded file %s\n", pathbuf);
+                }
+                successes++;
             }
-            successes++;
+        } else {
+            printf("Received an empty downloadinfo pointer\n");
         }
     }
     
