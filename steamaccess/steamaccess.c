@@ -21,7 +21,7 @@ struct downloadinfo **get_downloadinfo(char *items[], int itemcount) {
     // append ID to fields string
     char *field_buffer = malloc((15 + 35 * itemcount) * sizeof(char));
     if (!field_buffer) {
-        printf("Ran out of memory allocating field space\n");
+        printf("steamaccess.c: Ran out of memory allocating field space\n");
         exit(1);
     }
     char itembuf[32];
@@ -37,7 +37,7 @@ struct downloadinfo **get_downloadinfo(char *items[], int itemcount) {
     
     // in case of request failure, return NULL
     if (!result) {
-        printf("HTTP request failed\n");
+        printf("steamaccess.c: HTTP request failed\n");
         free(field_buffer);
         return NULL;
     }
@@ -46,7 +46,7 @@ struct downloadinfo **get_downloadinfo(char *items[], int itemcount) {
     jsmn_parser p;
     jsmntok_t *t = malloc(100 * sizeof(jsmntok_t) * itemcount);
     if (!t) {
-        printf("Ran out of memory allocating tokens\n");
+        printf("steamaccess.c: Ran out of memory allocating tokens\n");
         exit(1);
     }
     jsmn_init(&p);
@@ -54,14 +54,14 @@ struct downloadinfo **get_downloadinfo(char *items[], int itemcount) {
     
     // in case of parsing failure return NULL
     if (r < 0) {
-        printf("Failed to parse JSON: %d - possibly more tokens than expected\n", r);
+        printf("steamaccess.c: Failed to parse JSON: %d - possibly more tokens than expected\n", r);
         free(result);
         free(field_buffer);
         free(t);
         return NULL;
     }
     if (r < 1 || t[0].type != JSMN_OBJECT) {
-        printf("No object in JSON\n");
+        printf("steamaccess.c: No object in JSON\n");
         free(result);
         free(field_buffer);
         free(t);
@@ -74,7 +74,7 @@ struct downloadinfo **get_downloadinfo(char *items[], int itemcount) {
     char id_buf[15] = "all";
     struct downloadinfo **inf = malloc(itemcount * sizeof(struct downloadinfo *));
     if (!inf) {
-        printf("Ran out of memory allocating downloadinfo array\n");
+        printf("steamaccess.c: Ran out of memory allocating downloadinfo array\n");
         exit(1);
     }
     // go through all JSON tokens
@@ -85,14 +85,14 @@ struct downloadinfo **get_downloadinfo(char *items[], int itemcount) {
             // allocate memory for the current downloadinfo structure
             inf[z] = malloc(sizeof(struct downloadinfo));
             if (!inf[z]) {
-                printf("Ran out of memory allocating downloadinfo element\n");
+                printf("steamaccess.c: Ran out of memory allocating downloadinfo element\n");
                 exit(1);
             }
             // allocate memory in structure
             inf[z]->filename = malloc((strlen(buffer) * sizeof(char)) + 1);
             if (!inf[z]->filename) {
                 // exit if not enough memory
-                printf("Ran out of memory processing JSON\n");
+                printf("steamaccess.c: Ran out of memory processing JSON\n");
                 exit(1);
             }
             // copy filename into structure
@@ -104,7 +104,7 @@ struct downloadinfo **get_downloadinfo(char *items[], int itemcount) {
             inf[z]->url = malloc((strlen(buffer) * sizeof(char)) + 1);
             if (!inf[z]->url) {
                 // exit if not enough memory
-                printf("Ran out of memory processing JSON\n");
+                printf("steamaccess.c: Ran out of memory processing JSON\n");
                 exit(1);
             }
             // copy URL into structure
@@ -118,7 +118,7 @@ struct downloadinfo **get_downloadinfo(char *items[], int itemcount) {
             sprintf(buffer, "%.*s", t[i+1].end-t[i+1].start, result + t[i+1].start);
             if (strcmp(buffer, "1") != 0) {
                 // throw error if result is not 1
-                printf("JSON request returned result %s on item %s\n", buffer, id_buf);
+                printf("steamaccess.c: JSON request returned result %s on item %s\n", buffer, id_buf);
                 inf[z] = NULL;
                 z++;
             }

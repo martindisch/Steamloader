@@ -22,7 +22,7 @@ int curl_download(struct downloadinfo *files[], int filecount, char *location, i
             // if path doesn't end on '/', append it
             new_loc = malloc((length + 2) * sizeof(char));
             if (!new_loc) {
-                printf("Ran out of memory allocating modified path\n");
+                printf("curlloader.c: Ran out of memory allocating modified path\n");
                 exit(1);
             }
             strcpy(new_loc, location);
@@ -63,7 +63,7 @@ int curl_download(struct downloadinfo *files[], int filecount, char *location, i
             pagefile = fopen(pathbuf, "wb");
             
             if (!pagefile) {
-                printf("Failed to open file to save download - does the directory exist?\n");
+                printf("curlloader.c: Failed to open file to save download - does the directory exist?\n");
                 exit(1);
             } else {
                 // write page body to file handle
@@ -84,7 +84,7 @@ int curl_download(struct downloadinfo *files[], int filecount, char *location, i
                 successes++;
             }
         } else {
-            printf("Received an empty downloadinfo pointer\n");
+            printf("curlloader.c: Received an empty downloadinfo pointer\n");
         }
     }
     

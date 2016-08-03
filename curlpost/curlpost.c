@@ -16,7 +16,7 @@ static size_t write_mem_callback(void *contents, size_t size, size_t nmemb, void
     
     mem->memory = realloc(mem->memory, mem->size + realsize + 1);
     if (mem->memory == NULL) {
-        printf("Ran out of memory using libcurl\n");
+        printf("curlpost.c: Ran out of memory using libcurl\n");
         exit(1);
     }
     
@@ -62,7 +62,7 @@ char *curl_post(const char *url, const char *fields) {
     
     // check for errors
     if (res != CURLE_OK) {
-        printf("curl failed on URL\n%s\nwith fields\n%s\n", url, fields);
+        printf("curlpost.c: curl failed on URL\n%s\nwith fields\n%s\n", url, fields);
         chunk.memory = NULL;
     } else {
         // everything is fine

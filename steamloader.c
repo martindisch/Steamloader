@@ -109,7 +109,7 @@ int main(int argc, char **argv) {
         }
         free(results);
     } else {
-        printf("Unable to obtain information from Steam\n");
+        printf("steamloader.c: Unable to obtain information from Steam\n");
     }
     
     free(arguments.args);
