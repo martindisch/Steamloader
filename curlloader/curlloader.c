@@ -17,7 +17,7 @@ int curl_download(struct downloadinfo *files[], int filecount, char *location, i
         // save to current directory if no path has been specified
         location = malloc(1);
         strcpy(location, "");
-    } else if ((length = strlen(location)) > 1) {
+    } else if ((length = strlen(location)) >= 1) {
         if (location[length - 1] != '/') {
             // if path doesn't end on '/', append it
             new_loc = malloc((length + 2) * sizeof(char));
